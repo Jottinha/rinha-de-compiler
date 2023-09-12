@@ -1,4 +1,4 @@
-# rinha-de-compiler
+# Rinha de compiladores
 
 Em construção 🏗️
 
