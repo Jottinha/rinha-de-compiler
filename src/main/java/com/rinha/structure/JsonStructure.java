@@ -1,6 +1,10 @@
 package com.rinha.structure;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -17,9 +21,9 @@ public class JsonStructure {
         }
     }
 
-    public LanguageStructure getAbstractTree(String filePath){
+    public JsonObject getAbstractTree(String filePath){
         String json = getStringJson(filePath);
-        Gson gson = new Gson();
-        return gson.fromJson(json, LanguageStructure.class);
+        System.out.println(json);
+        return new JsonParser().parse(json).getAsJsonObject().getAsJsonObject("expression");
     }
 }
