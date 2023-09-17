@@ -23,7 +23,6 @@ public class JsonStructure {
 
     public JsonObject getAbstractTree(String filePath){
         String json = getStringJson(filePath);
-        System.out.println(json);
         return new JsonParser().parse(json).getAsJsonObject().getAsJsonObject("expression");
     }
 }
