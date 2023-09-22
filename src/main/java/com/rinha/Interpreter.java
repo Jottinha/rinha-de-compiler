@@ -1,13 +1,10 @@
 package com.rinha;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class Interpreter {
 
@@ -15,12 +12,6 @@ public class Interpreter {
 // Using this print to test some entry
 //        System.out.println( "Kind = "+ mappedJson.get("kind").getAsString());
         switch (mappedJson.get("kind").getAsString()){
-            case "Print": {
-                Object printValue = runInterpreter(mappedJson.getAsJsonObject("value"), env);
-                System.out.println(printValue);
-                return printValue;
-            }
-
             case "Str": {
                 return mappedJson.get("value").getAsString();
             }
@@ -29,16 +20,22 @@ public class Interpreter {
                 return mappedJson.get("value").getAsInt();
             }
 
+            case "Function": {
+                return mappedJson;
+            }
+
+            case "Print": {
+                Object printValue = runInterpreter(mappedJson.getAsJsonObject("value"), env);
+                System.out.println(printValue);
+                return printValue;
+            }
+
             case "Let": {
                 Object valueLet = runInterpreter(mappedJson.getAsJsonObject("value"), env);
                 env.put(mappedJson.getAsJsonObject("name").get("text").getAsString(), valueLet);
                 Map<String, Object> copyEnv = new HashMap<>(env);
                 copyEnv.put(mappedJson.getAsJsonObject("name").get("text").getAsString(), valueLet);
                 return runInterpreter(mappedJson.getAsJsonObject("next"), copyEnv);
-            }
-
-            case "Function": {
-                return mappedJson;
             }
 
             case "Call": {
@@ -53,6 +50,16 @@ public class Interpreter {
                         b = next;
                     }
                     return a;
+                }
+
+                //Sum simple implementation
+                if ("sum".equals(mappedJson.getAsJsonObject("callee").get("text").getAsString())){
+                    BigInteger valueSum = new BigInteger(String.valueOf(runInterpreter(mappedJson.getAsJsonArray("arguments").get(0).getAsJsonObject(), env)));
+                    int value = valueSum.intValue(),  result = 0;
+                    for (int i = 0; i < valueSum.intValue(); i++, value--){
+                        result += value;
+                    }
+                    return result;
                 }
             }
 
